@@ -42,7 +42,7 @@ function fnPNShow(elm) {
 
 
 function fnPNShowMap(elem) {
-  const sAddress = elem.text;
+  const sAddress = elem.innerText;
 
   const width = 800;
   const height = 600;
@@ -52,7 +52,7 @@ function fnPNShowMap(elem) {
 
   const sOptions = `status=no,scrollbars=no,resizable=no,left=${left},top=${top},width=${width},height=${height}`;
 
-  window.open(`map.html?${encodeURIComponent(sAddress)}`, 'propmap', sOptions);
+  window.open(`map.html?adr=${encodeURIComponent(sAddress)}`, 'propmap', sOptions);
 }
 
 async function fnPNDoSearch() {

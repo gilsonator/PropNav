@@ -14,9 +14,9 @@
                     <td><xsl:value-of select="@suburb"/></td>
                     <td><xsl:value-of select="@type"/></td>
                     <td><xsl:value-of select="@pricerange" /></td>
-                    <td><a href="" onclick="fnPNShowMap(this)" title="Click to View Map" ><xsl:value-of select="@saddress" /></a></td>
+                    <td><div onclick="fnPNShowMap(this)" title="Click to View Map" ><xsl:value-of select="@saddress" /></div></td>
                     <td><xsl:value-of select="@agent" /></td>
-                    <td><a href="" onclick="fnPNShow(this)" title="Click to View Page"><xsl:value-of select="@page" /></a></td>
+                    <td><a href="#" onclick="fnPNShow(this); return void;" title="Click to View Page"><xsl:value-of select="@page" /></a></td>
                 </tr>
             </xsl:for-each>
         </table>

@@ -25,20 +25,23 @@
 
       function load() {
         // var queryStrings = new QueryStringProcessor();
-        const url = window.location.href;
-        const urlObj = new URL(url);
-        const params = new URLSearchParams(urlObj.search);
 
+        const urlParams = new URLSearchParams(window.location.search);
+
+        //for (const [key, value] of urlParams.entries()) {
+        //    document.getElementById(key).value = decodeURIComponent(value);
+        //}
+        
         /*sAddress = queryStrings.get('adr').split(',');
         address = sAddress[0];
         suburb = sAddress[1];
         pcode = sAddress[2];
         //const sLatLng = queryStrings.get('latlng');
         */
-        address = params.get('adr');
-        suburb = sAddress[1];
-        pcode = sAddress[2];
-        const sLatLng = params.get('latlng');
+        address = urlParams.get('adr');
+        suburb = urlParams.get('suburb');
+        pcode = urlParams.get('pcode');
+        const sLatLng = urlParams.get('latlng');
 
         if (address == '') return;
 
@@ -53,9 +56,11 @@
           map.addControl(new GScaleControl());
 
           if (sLatLng == '') {
+            /* TODO:
             var geocoder = new GClientGeocoder();
             geocoder.setBaseCountryCode('au');
             geocoder.getLatLng(address + ' ' + suburb + ' ' + state + ' ' + pcode, getLatLngCallback);
+            */
             return;
           }
 
