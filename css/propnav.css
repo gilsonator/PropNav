@@ -1,0 +1,71 @@
+BODY {
+  font-family: verdana;
+  margin: 0px;
+}
+
+TD {
+  font-size: 10pt;
+}
+
+TH {
+  text-align: left;
+}
+
+H1 {
+  font-size: 14pt;
+}
+
+#results TABLE {
+  width: 770px;
+}
+
+#results TD {
+  padding-left: 50px;
+}
+
+#results TD.suburb {
+  font-size: 14pt;
+  background-color: #d6ecfb;
+  color: #772789;
+  padding: 4px;
+  font-weight: bold;
+}
+
+#results TD.type {
+  font-size: 12pt;
+  padding-left: 4px;
+  border-bottom: solid 1px #d6ecfb;
+}
+
+#results TD.pricerange {
+  padding-left: 20px;
+  font-weight: bold;
+}
+
+#results TD.pagelbl {
+  text-align: right;
+}
+
+#results TD.pagelbl {
+  text-align: left;
+}
+/*
+   FILE ARCHIVED ON 17:17:55 Feb 26, 2011 AND RETRIEVED FROM THE
+   INTERNET ARCHIVE ON 10:01:04 Sep 23, 2024.
+   JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+   ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+   SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+captures_list: 0.532
+exclusion.robots: 0.018
+exclusion.robots.policy: 0.009
+esindex: 0.011
+cdx.remote: 8.072
+LoadShardBlock: 46.575 (3)
+PetaboxLoader3.datanode: 65.585 (4)
+load_resource: 56.292
+PetaboxLoader3.resolve: 30.735
+*/

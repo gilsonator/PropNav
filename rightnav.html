@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0115)https://web.archive.org/web/20110226165626/http://static.townsvillebulletin.com.au/realestate/Propnav/rightnav.html -->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <title>Townsville Bulletin Property Navigator</title>
+    <link rel="StyleSheet" type="text/css" href="propnav.css" />
+    <script type="text/javascript" src="scripts/propnav.js"></script>
+    <script type="text/javascript" src="scripts/mozxpath.js"></script>
+    <script type="text/javascript">
+      function window_onload() {
+        fnPNSetupCombos();
+
+        document.getElementById('B1').disabled = false;
+      }
+    </script>
+  </head>
+  <body
+    onload="return window_onload()"
+    style="margin: 0; padding: 0; border: 0; background-color: #d6ecfb; /*#eeecdc*/"
+  >
+
+
+    <table border="0" width="100%" id="table1" cellpadding="0" cellspacing="0">
+      <tbody>
+        <tr>
+          <td width="100%" valign="top">
+            <table border="0" width="98%" id="table2" cellpadding="3">
+              <tbody>
+                <tr>
+                  <td style="font-size: 100%"><b>Search By... </b></td>
+                </tr>
+
+                <tr>
+                  <td>
+                    Publication Date:<br />
+                    <select size="1" id="PubDate" style="width: 100%" disabled="">
+                      <option selected="selected" value="">Choose Date</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Price Range:<br />
+                    <select size="1" id="PriceRange" style="width: 100%">
+                      <option selected="selected" value="">Show All</option>
+                      <option value="$0 - $300,000">$0 - $300,000</option>
+                      <option value="$300,000 - $450,000">$300,000 - $450,000</option>
+                      <option value="$450,000+">$450,000+</option>
+                      <option value="Auction">Auction</option>
+                      <option value="Price on Application">Price on Application</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Suburb:<br />
+                    <select size="1" id="Suburb" style="width: 100%" disabled="">
+                      <option selected="selected" value="">Show All</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Property Type:<br />
+                    <select size="1" id="Type" style="width: 100%">
+                      <option selected="selected" value="">Show All</option>
+                      <option value="Unit">Unit</option>
+                      <option value="House">House</option>
+                      <option value="Land">Land</option>
+                      <option value="Comm">Comm</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Agent:<br />
+                    <select size="1" id="Agent" style="width: 100%" disabled="">
+                      <option selected="selected" value="">Show All</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type="button" value="Search..." id="B1" onclick="fnRightNavSearch()" disabled="" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

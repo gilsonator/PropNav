@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Townsville Bulletin | Property Navigator Map</title>
+
+    <script
+      src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=ABQIAAAAbe0h2C02Hq986Hql8vuzkxTaL-D9spxX2A8rg4rHZSeNHGeK6xTMOWD-HJC8b508xSRGjx8r4dipNA"
+      type="text/javascript"
+    ></script>
+    
+    <script type="text/javascript">
+      //<![CDATA[
+
+      var map = null;
+      var marker = null;
+      var addressGLatLng = null;
+      var myPano = null;
+      var panoClient = null;
+      var address = '';
+      var suburb = '';
+      var state = 'QLD';
+      var pcode = '';
+
+      function load() {
+        // var queryStrings = new QueryStringProcessor();
+        const url = window.location.href;
+        const urlObj = new URL(url);
+        const params = new URLSearchParams(urlObj.search);
+
+        /*sAddress = queryStrings.get('adr').split(',');
+        address = sAddress[0];
+        suburb = sAddress[1];
+        pcode = sAddress[2];
+        //const sLatLng = queryStrings.get('latlng');
+        */
+        address = params.get('adr');
+        suburb = sAddress[1];
+        pcode = sAddress[2];
+        const sLatLng = params.get('latlng');
+
+        if (address == '') return;
+
+        if (GBrowserIsCompatible()) {
+          document.getElementById('addrDiv').innerHTML = address + ', ' + suburb + ' ' + state + ' ' + pcode;
+
+          map = new GMap2(document.getElementById('mapDiv'));
+
+          largeControl = new GLargeMapControl();
+          map.addControl(largeControl);
+          map.addControl(new GMapTypeControl());
+          map.addControl(new GScaleControl());
+
+          if (sLatLng == '') {
+            var geocoder = new GClientGeocoder();
+            geocoder.setBaseCountryCode('au');
+            geocoder.getLatLng(address + ' ' + suburb + ' ' + state + ' ' + pcode, getLatLngCallback);
+            return;
+          }
+
+          sLatLngSplitted = sLatLng.split(',');
+
+          point = new GLatLng(parseFloat(sLatLngSplitted[0]), parseFloat(sLatLngSplitted[1]));
+
+          getLatLngCallback(point);
+        } else {
+          alert("Your browser doesn't support Google Maps");
+        }
+      }
+
+      function getLatLngCallback(point) {
+        if (!point) {
+          alert("We're sorry but the address was not found!");
+          window.close();
+        } else {
+          map.setCenter(point, 16);
+          marker = new GMarker(point);
+          map.addOverlay(marker);
+
+          var sHTML = '';
+
+          sHTML +=
+            '<div style="border-bottom: 1px solid black; "><img src="images/popupbanner.jpg" height="40" width="277" style="margin: 0 6px 4px 0px"></div>';
+          sHTML += '<div style="padding-top: 3px;font-family: arial;font-size: 12pt">';
+
+          sHTML += address + ',<br>' + suburb + ' ' + state + ' ' + pcode + '</div>';
+
+          GEvent.addListener(marker, 'click', function () {
+            marker.openInfoWindowHtml(sHTML);
+          });
+
+          marker.openInfoWindowHtml(sHTML);
+
+          addressGLatLng = point;
+        }
+      }
+
+      var streetViewVisible = false;
+
+      function showStreetView() {
+        if (!addressGLatLng) return;
+
+        if (streetViewVisible) {
+          myPano.hide();
+          document.getElementById('streetViewDiv').style.display = 'none';
+          document.getElementById('mapDiv').style.height = '570px';
+          map.checkResize();
+          centerProperty();
+          document.getElementById('cmdStreetView').value = 'Show Street View';
+          streetViewVisible = false;
+          //myPano.remove ();
+
+          return;
+        }
+
+        panoClient = new GStreetviewClient();
+        panoClient.getNearestPanorama(addressGLatLng, showPanoData);
+      }
+
+      function showPanoData(panoData) {
+        if (panoData.code != 200) {
+          switch (panoData.code) {
+            case 500:
+              alert('A server error occured!');
+              break;
+            case 600:
+              alert('No Street View is available for this address.');
+              break;
+          }
+          return;
+        }
+
+        streetViewVisible = true;
+
+        document.getElementById('cmdStreetView').value = 'Hide Street View';
+
+        centerProperty();
+        document.getElementById('mapDiv').style.height = '320px';
+        map.checkResize();
+
+        document.getElementById('streetViewDiv').style.display = 'block';
+        document.getElementById('streetViewDiv').innerHTML = 'Street View is Loading....';
+
+        map.panBy(new GSize(0, -50));
+
+        if (!myPano) {
+          myPano = new GStreetviewPanorama(document.getElementById('streetViewDiv'));
+          GEvent.addListener(myPano, 'error', handleNoFlash);
+        } else {
+          myPano.show();
+        }
+
+        // Make sure camera is pointing at correct property
+        var angle = computeAngle(addressGLatLng, panoData.location.latlng);
+        myPano.setLocationAndPOV(panoData.location.latlng, { yaw: angle });
+      }
+
+      function handleNoFlash(errorCode) {
+        if (errorCode == 603) {
+          alert("Flash doesn't appear to be supported by your browser!");
+          return;
+        }
+      }
+
+      function cmdPrint_onclick() {
+        window.print();
+      }
+
+      function computeAngle(endLatLng, startLatLng) {
+        var DEGREE_PER_RADIAN = 57.2957795;
+        var RADIAN_PER_DEGREE = 0.017453;
+
+        var dlat = endLatLng.lat() - startLatLng.lat();
+        var dlng = endLatLng.lng() - startLatLng.lng();
+
+        // We multiply dlng with cos(endLat), since the two points are very closeby,
+        // so we assume their cos values are approximately equal.
+        var yaw = Math.atan2(dlng * Math.cos(endLatLng.lat() * RADIAN_PER_DEGREE), dlat) * DEGREE_PER_RADIAN;
+        return wrapAngle(yaw);
+      }
+
+      function wrapAngle(angle) {
+        if (angle >= 360) {
+          angle -= 360;
+        } else if (angle < 0) {
+          angle += 360;
+        }
+        return angle;
+      }
+
+      function centerProperty() {
+        map.setCenter(addressGLatLng, map.getZoom());
+      }
+
+      //]]>
+    </script>
+    <style type="text/css" media="print">
+      INPUT {
+        display: none;
+      }
+    </style>
+  </head>
+  <body
+    onload="load()"
+    onunload="GUnload()"
+    style="border: 0; margin: 0; background-color: #d6ecfb; font-family: Arial"
+  >
+    <div id="mapDiv" style="width: 800px; display: block; height: 570px; border-bottom: 2px solid #00a8ec"></div>
+    <div id="streetViewDiv" style="width: 800px; height: 250px; display: none; border-bottom: 2px solid #00a8ec"></div>
+    <div style="padding-left: 2px; padding-top: 2px; height: 20px; width: 800px">
+      <div id="addrDiv" style="font-family: arial; font-size: 12pt; float: right; padding-right: 4px"></div>
+      <input id="cmdStreetView" type="button" value="Show Street View" onclick="showStreetView()" />
+      <input id="cmdPrint" type="button" value="Print Map" onclick="cmdPrint_onclick()" />
+      <input id="cmdClose" type="button" value="Close" onclick="window.close()" />
+    </div>
+  </body>
+</html>
