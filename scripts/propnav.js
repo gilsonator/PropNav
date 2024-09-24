@@ -70,22 +70,22 @@ async function fnPNDoSearch() {
     tmpBox.appendChild(fragment);
 
     finishedHTML = tmpBox.innerHTML;
+
+    document.getElementById('results').innerHTML = finishedHTML;
+
+    // Add click event for table to handle multiple row div buttons without multiple event handlers
+    document.getElementById('propTable').addEventListener('click', function (event) {
+      if (event.target) {
+        if (event.target.matches('div.mapBtn')) {
+          fnPNShowMap(event.target);
+        } else if (event.target.matches('div.pageBtn')) {
+          fnPNShow(event.target);
+        }
+      }
+    });
   } catch (error) {
     console.error('Error during transformation:', error);
   }
-
-  document.getElementById('results').innerHTML = finishedHTML;
-
-  // Add click event for table to handle multiple row div buttons without multiple event handlers
-  document.getElementById('propTable').addEventListener('click', function (event) {
-    if (event.target) {
-      if (event.target.matches('div.mapBtn')) {
-        fnPNShowMap(event.target);
-      } else if (event.target.matches('div.pageBtn')) {
-        fnPNShow(event.target);
-      }
-    }
-  });
 }
 
 async function fnPNBuildSuburbs() {
