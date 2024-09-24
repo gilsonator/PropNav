@@ -37,9 +37,13 @@ function fnPNShow(elm) {
 
   const sOptions = `status=no,scrollbars=yes,resizable=yes,left=0,top=0,width=${width},height=${height}`;
 
-  window.open(`../${sDate}/${elm.innerHTML}.pdf`, 'propprev', sOptions);
-}
+  // window.open(`../${sDate}/${elm.innerHTML}.pdf`, 'propprev', sOptions);
+  const baseURL = window.location.origin; 
+  const fullPath = `${baseURL}/pdf/${sDate}/${elm.innerHTML}.pdf`;
 
+  alert (`PDF Would have been located:\n${fullPath}`);
+  return null;
+}
 
 function fnPNShowMap(elem) {
   const sAddress = elem.innerText;
@@ -52,7 +56,7 @@ function fnPNShowMap(elem) {
 
   const sOptions = `status=no,scrollbars=no,resizable=no,left=${left},top=${top},width=${width},height=${height}`;
 
-  window.open(`map.html?adr=${encodeURIComponent(sAddress)}`, 'propmap', sOptions);
+  return window.open(`map.html?adr=${encodeURIComponent(sAddress)}`, 'propmap', sOptions);
 }
 
 async function fnPNDoSearch() {

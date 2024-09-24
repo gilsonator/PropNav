@@ -7,16 +7,38 @@
     <xsl:template match="propnav">
         <table width="100%">
             <tr>
-                <th>Suburb</th><th>Type</th><th>Price Range</th><th width="20%">Address</th><th>Agent</th><th>Page</th>
+                <th>Suburb</th>
+                <th>Type</th>
+                <th>Price Range</th>
+                <th width="20%">Address</th>
+                <th>Agent</th>
+                <th>Page</th>
             </tr>
             <xsl:for-each select="property[contains(@pubdate, $Date) and contains(@suburb, $Suburb) and contains(@type, $Type) and contains(@pricerange, $PriceRange) and contains(@agent, $Agent)]">
+                <xsl:variable name="currentPosition" select="position()" />
                 <tr>
-                    <td><xsl:value-of select="@suburb"/></td>
-                    <td><xsl:value-of select="@type"/></td>
-                    <td><xsl:value-of select="@pricerange" /></td>
-                    <td><div onclick="fnPNShowMap(this)" title="Click to View Map" ><xsl:value-of select="@saddress" /></div></td>
-                    <td><xsl:value-of select="@agent" /></td>
-                    <td><a href="#" onclick="fnPNShow(this); return void;" title="Click to View Page"><xsl:value-of select="@page" /></a></td>
+                    <td>
+                        <xsl:value-of select="@suburb"/>
+                    </td>
+                    <td>
+                        <xsl:value-of select="@type"/>
+                    </td>
+                    <td>
+                        <xsl:value-of select="@pricerange" />
+                    </td>
+                    <td>
+                        <button class="mapBtn" data-id="MapId-{$currentPosition}" onclick="fnPNShowMap(this)" title="Click to View Map">
+                            <xsl:value-of select="@saddress" />
+                        </button>
+                    </td>
+                    <td>
+                        <xsl:value-of select="@agent" />
+                    </td>
+                    <td>
+                        <button class="pageBtn" data-id="PageId-{$currentPosition}" onclick="fnPNShow(this)" title="Click to View Page">
+                            <xsl:value-of select="@page" />
+                        </button>
+                    </td>
                 </tr>
             </xsl:for-each>
         </table>
