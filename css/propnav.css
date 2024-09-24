@@ -1,71 +1,130 @@
-BODY {
-  font-family: verdana;
-  margin: 0px;
+/* DG 2024: NEW */
+
+body {
+  border: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+.container {
+  display: flex;
+  flex: 1;
+  width: 100%;
+}
+.left-column {
+  width: 180px;
+  background-color: #D6ECFB;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.right-column {
+  flex: 1;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+#results {
+  width: 100%;
+  height: 100%;
+}
+.form-group {
+  margin-bottom: 8px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 2px;
+  font-size: smaller;
+  font-weight: 700;
+}
+.form-group select {
+  width: 100%;
+  padding: 4px 2px;
+}
+.form-group button {
+  padding: 4px
+}
+.instructions {
+  font-size: 12px;
+}
+.arrow {
+  font-size: 1.5em; /* Adjust the size as needed */
 }
 
-TD {
-  font-size: 10pt;
-}
-
-TH {
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 16px;
   text-align: left;
 }
 
-H1 {
-  font-size: 14pt;
+th, td {
+  border: 1px solid #ddd;
+  padding: 2px 5px;
 }
 
-#results TABLE {
-  width: 770px;
+th {
+  padding: 12px 5px;
+  background-color: #f2f2f2;
+  color: #333;
 }
 
-#results TD {
-  padding-left: 50px;
+tr:nth-child(even) {
+  background-color: #f9f9f9;
 }
 
-#results TD.suburb {
-  font-size: 14pt;
-  background-color: #d6ecfb;
-  color: #772789;
-  padding: 4px;
-  font-weight: bold;
+tr:hover {
+  background-color: #f1f1f1;
 }
 
-#results TD.type {
-  font-size: 12pt;
-  padding-left: 4px;
-  border-bottom: solid 1px #d6ecfb;
+td:first-child {
+  width: 80px;
 }
 
-#results TD.pricerange {
-  padding-left: 20px;
-  font-weight: bold;
+.buttons {
+  display: flex;
+  flex-direction: row;
 }
 
-#results TD.pagelbl {
-  text-align: right;
+.pageBtn, .mapBtn {
+  cursor: pointer;
+  display: flex;
+  padding: 5px;
+  border-radius: 5px;
+  /*background-color: #007bff;*/
+  background-color: #D6ECFB;
+  color: white;
+  margin-right: 4px;
 }
 
-#results TD.pagelbl {
-  text-align: left;
+.pageBtn:hover, .mapBtn:hover {
+  background-color: #B0D4F1;
 }
-/*
-   FILE ARCHIVED ON 17:17:55 Feb 26, 2011 AND RETRIEVED FROM THE
-   INTERNET ARCHIVE ON 10:01:04 Sep 23, 2024.
-   JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
 
-   ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
-   SECTION 108(a)(3)).
-*/
-/*
-playback timings (ms):
-captures_list: 0.532
-exclusion.robots: 0.018
-exclusion.robots.policy: 0.009
-esindex: 0.011
-cdx.remote: 8.072
-LoadShardBlock: 46.575 (3)
-PetaboxLoader3.datanode: 65.585 (4)
-load_resource: 56.292
-PetaboxLoader3.resolve: 30.735
-*/
+.pageBtn img, .mapBtn img {
+  cursor: pointer;
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 5px;
+  /*background-color: #007bff;*/
+  color: white;
+  float: left;
+}
+
+.pageBtn img {
+  cursor: pointer;
+  vertical-align: text-top;
+}
+
+.mapBtn {
+  cursor: pointer;
+}
+
+.mapBtn img {
+  vertical-align: text-top;
+  float: inline-start;
+}
