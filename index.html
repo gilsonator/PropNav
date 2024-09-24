@@ -1,94 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Property Navigator - Upgrade Demo</title>
-    <link rel="stylesheet" href="css/propnav.css">
+    <link rel="stylesheet" href="css/propnav.css" />
     <script src="scripts/propnav.js" defer></script>
     <script src="scripts/mozxpath.js" defer></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            fnPNBuildDates();
-            fnPNBuildSuburbs();
-            fnPNBuildAgents();
+      document.addEventListener('DOMContentLoaded', () => {
+        fnPNBuildDates();
+        fnPNBuildSuburbs();
+        fnPNBuildAgents();
 
-            document.getElementById('btnSearch').disabled = false;
+        document.getElementById('btnSearch').disabled = false;
 
-            const urlParams = new URLSearchParams(window.location.search);
+        const urlParams = new URLSearchParams(window.location.search);
 
-            for (const [key, value] of urlParams.entries()) {
-                document.getElementById(key).value = decodeURIComponent(value);
-            }
+        for (const [key, value] of urlParams.entries()) {
+          document.getElementById(key).value = decodeURIComponent(value);
+        }
 
-            if (urlParams.toString()) {
-                fnPNDoSearch();
-            }
+        if (urlParams.toString()) {
+          fnPNDoSearch();
+        }
+
+        document.getElementById('toggle-btn').addEventListener('click', function () {
+          document.getElementById('left-column').classList.toggle('collapsed');
+          document.getElementById('col-heading').classList.toggle('collapsed');
+
         });
+      });
     </script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="left-column">
-            <div class="form-group">
-                <label for="PubDate">Publication Date:</label>
-                <select id="PubDate" disabled>
-                    <option selected value="">Choose Date</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="PriceRange">Price Range:</label>
-                <select id="PriceRange">
-                    <option selected value="">Show All</option>
-                    <option value="$0 - $300,000">$0 - $300,000</option>
-                    <option value="$300,000 - $450,000">$300,000 - $450,000</option>
-                    <option value="$450,000+">$450,000+</option>
-                    <option value="Auction">Auction</option>
-                    <option value="Price on Application">Price on Application</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="Suburb">Suburb:</label>
-                <select id="Suburb" disabled>
-                    <option selected value="">Show All</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="Type">Property Type:</label>
-                <select id="Type">
-                    <option selected value="">Show All</option>
-                    <option value="Unit">Unit</option>
-                    <option value="House">House</option>
-                    <option value="Land">Land</option>
-                    <option value="Comm">Comm</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="Agent">Agent:</label>
-                <select id="Agent" disabled>
-                    <option selected value="">Show All</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <button type="button" id="btnSearch" onclick="fnPNDoSearch()" disabled>Search</button>
-            </div>
-            <div class="instructions">
-                <b>Instructions:</b><br>
-                Select options above to refine your search and click search to find your new property.
-            </div>
+      <div id="left-column" class="left-column">
+        <div>
+            <span id="col-heading" class="col-heading">Search.</span>
+            <button type="button" class="toggle-btn" id="toggle-btn">☰</button>
         </div>
-        <div class="right-column">
-            <div id="results">
-                <h1>Start Your Search…..</h1>
-                <p>
-                    <span class="arrow">«</span> Choose the options from the left and click search to find your new property...
-                </p>
-                <ul>
-                    <li>You can click on the address to view a map of the area.</li>
-                    <li>You can click on the page number to view the real estate page.</li>
-                </ul>
-            </div>
+        <div class="form-group">
+          <label for="PubDate">Publication Date:</label>
+          <select id="PubDate" disabled>
+            <option selected value="">Choose Date</option>
+          </select>
         </div>
+        <div class="form-group">
+          <label for="PriceRange">Price Range:</label>
+          <select id="PriceRange">
+            <option selected value="">Show All</option>
+            <option value="$0 - $300,000">$0 - $300,000</option>
+            <option value="$300,000 - $450,000">$300,000 - $450,000</option>
+            <option value="$450,000+">$450,000+</option>
+            <option value="Auction">Auction</option>
+            <option value="Price on Application">Price on Application</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="Suburb">Suburb:</label>
+          <select id="Suburb" disabled>
+            <option selected value="">Show All</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="Type">Property Type:</label>
+          <select id="Type">
+            <option selected value="">Show All</option>
+            <option value="Unit">Unit</option>
+            <option value="House">House</option>
+            <option value="Land">Land</option>
+            <option value="Comm">Comm</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="Agent">Agent:</label>
+          <select id="Agent" disabled>
+            <option selected value="">Show All</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <button type="button" id="btnSearch" onclick="fnPNDoSearch()" disabled>Search</button>
+        </div>
+        <div class="instructions">
+          <b>Instructions:</b><br />
+          Select options above to refine your search and click search to find your new property.
+        </div>
+      </div>
+      <div id="right-column" class="right-column">
+        <div id="results">
+          <h1>Start Your Search…..</h1>
+          <p>
+            <span class="arrow">«</span> Choose the options from the left and click search to find your new property...
+          </p>
+          <ul>
+            <li>You can click on the address to view a map of the area.</li>
+            <li>You can click on the page number to view the real estate page.</li>
+          </ul>
+        </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>
