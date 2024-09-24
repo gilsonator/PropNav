@@ -20,7 +20,7 @@
                     <td>
                         <div class="buttons">
                             <div class="pageBtn" data-id="PageId-{$currentPosition}" data-page="{@page}" data-function="fnPNShow" title="Click to View Page {@page}"></div>
-                            <div class="mapBtn" data-id="MapId-{$currentPosition}" data-address="{@saddress},{@suburb}" data-function="fnPNShowMap" title="Click to View Map"></div>
+                            <div class="mapBtn" data-id="MapId-{$currentPosition}" data-address="{@saddress},{@suburb}" data-function="fnPNShowMap" title="Click to View Map of {@saddress}, {@suburb}"></div>
                         </div>
                     </td>
                     <td>
