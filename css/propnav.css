@@ -144,18 +144,19 @@ td:first-child {
 
 .pageBtn:hover, .mapBtn:hover {
   background-color: #B0D4F1;
+  background-size: 28px;
 }
 
 .pageBtn {
-  background-image: url(../images/pdf_icon.png);
-  background-size: 22px;
+  background-image: url(../images/newspaper.svg);
+  background-size: 24px;
   background-repeat: no-repeat;
   background-position: center;
 }
 
 .mapBtn {
-  background-image: url(../images/pin_icon.png);
-  background-size: 22px;
+  background-image: url(../images/maps.svg);
+  background-size: 24px;
   background-repeat: no-repeat;
   background-position: center;
 }
