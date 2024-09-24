@@ -64,6 +64,7 @@ class CustomAlert {
           width: 80%;
           max-width: 300px;
           text-align: center;
+          border-radius: 5px;
       }
       .custom-alert-close-btn {
           background-color: #4CAF50;
