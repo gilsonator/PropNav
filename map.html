@@ -45,7 +45,7 @@
 
         if (address == '') return;
 
-        if (GBrowserIsCompatible()) {
+        //if (GBrowserIsCompatible()) {
           document.getElementById('addrDiv').innerHTML = address + ', ' + suburb + ' ' + state + ' ' + pcode;
 
           map = new GMap2(document.getElementById('mapDiv'));
@@ -69,9 +69,9 @@
           point = new GLatLng(parseFloat(sLatLngSplitted[0]), parseFloat(sLatLngSplitted[1]));
 
           getLatLngCallback(point);
-        } else {
-          alert("Your browser doesn't support Google Maps");
-        }
+        //} else {
+        //  alert("Your browser doesn't support Google Maps");
+        //}
       }
 
       function getLatLngCallback(point) {
