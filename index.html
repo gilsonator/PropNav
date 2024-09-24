@@ -61,7 +61,7 @@
             fnPNBuildSuburbs();
             fnPNBuildAgents();
 
-            document.getElementById('B1').disabled = false;
+            document.getElementById('btnSearch').disabled = false;
 
             const urlParams = new URLSearchParams(window.location.search);
 
@@ -118,7 +118,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <input type="button" value="Search..." id="B1" onclick="fnPNDoSearch()" disabled>
+                <input type="button" value="Search..." id="btnSearch" onclick="fnPNDoSearch()" disabled>
             </div>
             <div class="instructions">
                 Instructions:<br>
