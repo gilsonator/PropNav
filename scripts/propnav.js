@@ -1,13 +1,12 @@
-
 // Written by David Gilson.
 
 function fnRightNavSearch() {
   const oDate = document.getElementById('PubDate');
 
   if (!oDate.value) {
-      alert('Please choose a date...');
-      oDate.focus();
-      return;
+    alert('Please choose a date...');
+    oDate.focus();
+    return;
   }
 
   const params = new URLSearchParams();
@@ -38,10 +37,10 @@ function fnPNShow(elm) {
   const sOptions = `status=no,scrollbars=yes,resizable=yes,left=0,top=0,width=${width},height=${height}`;
 
   // window.open(`../${sDate}/${elm.innerHTML}.pdf`, 'propprev', sOptions);
-  const baseURL = window.location.href; 
+  const baseURL = window.location.href;
   const fullPath = `${baseURL}Pages/${sDate}/${elm.dataset.page}.pdf`;
 
-  alert (`A PDF of Page ${elm.dataset.page} would have downloaded from:\n\n${fullPath}`);
+  alert(`A PDF of Page ${elm.dataset.page} would have downloaded from:\n\n${fullPath}`);
   return null;
 }
 
@@ -60,12 +59,12 @@ function fnPNShowMap(elem) {
 }
 
 async function fnPNDoSearch() {
-  const oDate = document.getElementById("PubDate");
+  const oDate = document.getElementById('PubDate');
 
   if (!oDate.value) {
-      alert('Please choose a date...');
-      oDate.focus();
-      return;
+    alert('Please choose a date...');
+    oDate.focus();
+    return;
   }
 
   const myXmlData = './xml/propnav.xml';
@@ -74,38 +73,45 @@ async function fnPNDoSearch() {
   let finishedHTML = '';
 
   try {
-      const [xmlResponse, xslResponse] = await Promise.all([
-          fetch(myXmlData),
-          fetch(myXslStylesheet)
-      ]);
+    const [xmlResponse, xslResponse] = await Promise.all([fetch(myXmlData), fetch(myXslStylesheet)]);
 
-      const xmlText = await xmlResponse.text();
-      const xslText = await xslResponse.text();
+    const xmlText = await xmlResponse.text();
+    const xslText = await xslResponse.text();
 
-      const parser = new DOMParser();
-      const domXMLDocument = parser.parseFromString(xmlText, 'application/xml');
-      const domXSLTDocument = parser.parseFromString(xslText, 'application/xml');
+    const parser = new DOMParser();
+    const domXMLDocument = parser.parseFromString(xmlText, 'application/xml');
+    const domXSLTDocument = parser.parseFromString(xslText, 'application/xml');
 
-      const xsltProcessor = new XSLTProcessor();
-      xsltProcessor.importStylesheet(domXSLTDocument);
+    const xsltProcessor = new XSLTProcessor();
+    xsltProcessor.importStylesheet(domXSLTDocument);
 
-      xsltProcessor.setParameter(null, 'Date', oDate.value);
-      xsltProcessor.setParameter(null, 'Suburb', document.getElementById('Suburb').value);
-      xsltProcessor.setParameter(null, 'Type', document.getElementById('Type').value);
-      xsltProcessor.setParameter(null, 'PriceRange', document.getElementById('PriceRange').value);
-      xsltProcessor.setParameter(null, 'Agent', document.getElementById('Agent').value);
+    xsltProcessor.setParameter(null, 'Date', oDate.value);
+    xsltProcessor.setParameter(null, 'Suburb', document.getElementById('Suburb').value);
+    xsltProcessor.setParameter(null, 'Type', document.getElementById('Type').value);
+    xsltProcessor.setParameter(null, 'PriceRange', document.getElementById('PriceRange').value);
+    xsltProcessor.setParameter(null, 'Agent', document.getElementById('Agent').value);
 
-      const fragment = xsltProcessor.transformToFragment(domXMLDocument, document);
+    const fragment = xsltProcessor.transformToFragment(domXMLDocument, document);
 
-      const tmpBox = document.createElement('div');
-      tmpBox.appendChild(fragment);
+    const tmpBox = document.createElement('div');
+    tmpBox.appendChild(fragment);
 
-      finishedHTML = tmpBox.innerHTML;
+    finishedHTML = tmpBox.innerHTML;
   } catch (error) {
-      console.error('Error during transformation:', error);
+    console.error('Error during transformation:', error);
   }
 
   document.getElementById('results').innerHTML = finishedHTML;
+
+  document.getElementById('propTable').addEventListener('click', function (event) {
+    if (event.target) {
+      if (event.target.matches('div.mapBtn')) {
+        fnPNShowMap(event.target);
+      } else if (event.target.matches('div.pageBtn')) {
+        fnPNShow(event.target);
+      }
+    }
+  });
 }
 
 async function fnPNBuildSuburbs() {
@@ -116,19 +122,19 @@ async function fnPNBuildSuburbs() {
   suburbDropdown.disabled = true;
 
   try {
-      const response = await fetch(myXmlData);
-      const xmlText = await response.text();
+    const response = await fetch(myXmlData);
+    const xmlText = await response.text();
 
-      const parser = new DOMParser();
-      const domXMLDocument = parser.parseFromString(xmlText, 'application/xml');
+    const parser = new DOMParser();
+    const domXMLDocument = parser.parseFromString(xmlText, 'application/xml');
 
-      const xmlNodes = domXMLDocument.querySelectorAll('suburb');
+    const xmlNodes = domXMLDocument.querySelectorAll('suburb');
 
-      xmlNodes.forEach(node => {
-          fnPNAddItemToDropDown(suburbDropdown, node.getAttribute('name'), node.getAttribute('name'));
-      });
+    xmlNodes.forEach(node => {
+      fnPNAddItemToDropDown(suburbDropdown, node.getAttribute('name'), node.getAttribute('name'));
+    });
   } catch (error) {
-      console.error('Error loading suburbs:', error);
+    console.error('Error loading suburbs:', error);
   }
 
   window.status = '';
@@ -143,19 +149,19 @@ async function fnPNBuildAgents() {
   agentDropdown.disabled = true;
 
   try {
-      const response = await fetch(myXmlData);
-      const xmlText = await response.text();
+    const response = await fetch(myXmlData);
+    const xmlText = await response.text();
 
-      const parser = new DOMParser();
-      const domXMLDocument = parser.parseFromString(xmlText, 'application/xml');
+    const parser = new DOMParser();
+    const domXMLDocument = parser.parseFromString(xmlText, 'application/xml');
 
-      const xmlNodes = domXMLDocument.querySelectorAll('agent');
+    const xmlNodes = domXMLDocument.querySelectorAll('agent');
 
-      xmlNodes.forEach(node => {
-          fnPNAddItemToDropDown(agentDropdown, node.getAttribute('name'), node.getAttribute('name'));
-      });
+    xmlNodes.forEach(node => {
+      fnPNAddItemToDropDown(agentDropdown, node.getAttribute('name'), node.getAttribute('name'));
+    });
   } catch (error) {
-      console.error('Error loading agents:', error);
+    console.error('Error loading agents:', error);
   }
 
   window.status = '';
@@ -170,19 +176,19 @@ async function fnPNBuildDates() {
   pubDateDropdown.disabled = true;
 
   try {
-      const response = await fetch(myXmlData);
-      const xmlText = await response.text();
+    const response = await fetch(myXmlData);
+    const xmlText = await response.text();
 
-      const parser = new DOMParser();
-      const domXMLDocument = parser.parseFromString(xmlText, 'application/xml');
+    const parser = new DOMParser();
+    const domXMLDocument = parser.parseFromString(xmlText, 'application/xml');
 
-      const xmlNodes = domXMLDocument.querySelectorAll('date');
+    const xmlNodes = domXMLDocument.querySelectorAll('date');
 
-      xmlNodes.forEach(node => {
-          fnPNAddItemToDropDown(pubDateDropdown, node.getAttribute('datestring'), node.getAttribute('datestring'));
-      });
+    xmlNodes.forEach(node => {
+      fnPNAddItemToDropDown(pubDateDropdown, node.getAttribute('datestring'), node.getAttribute('datestring'));
+    });
   } catch (error) {
-      console.error('Error loading dates:', error);
+    console.error('Error loading dates:', error);
   }
 
   window.status = '';
