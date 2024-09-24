@@ -21,9 +21,13 @@ function load() {
 
   document.getElementById('addrDiv').innerHTML = `${address}, ${suburb} ${state} ${pcode}`;
 
+  // Location set to Townsville City
+  // https://www.latlong.net/place/townsville-city-qld-australia-23743.html
+  const centerPosition = { lat: -19.258965, lng: 146.816956 };
+
   map = new google.maps.Map(document.getElementById('mapDiv'), {
-    zoom: 8,
-    center: { lat: -25.344, lng: 131.036 },
+    zoom: 16,
+    center: centerPosition,
     mapTypeId: 'roadmap',
   });
 
