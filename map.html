@@ -1,77 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Townsville Bulletin | Property Navigator Map</title>
 
     <script
-      src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=ABQIAAAAbe0h2C02Hq986Hql8vuzkxTaL-D9spxX2A8rg4rHZSeNHGeK6xTMOWD-HJC8b508xSRGjx8r4dipNA"
-      type="text/javascript"
-    ></script>
-    
-    <script type="text/javascript">
-      //<![CDATA[
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB02R4laQio9VntvjvSDk92KsT5PNH15b0&callback=load"
+    async
+    defer
+  ></script>
 
-      var map = null;
-      var marker = null;
-      var addressGLatLng = null;
-      var myPano = null;
-      var panoClient = null;
-      var address = '';
-      var suburb = '';
-      var state = 'QLD';
-      var pcode = '';
+    <script type="text/javascript">
+      let map = null;
+      let marker = null;
+      let addressGLatLng = null;
+      let myPano = null;
+      let streetViewVisible = false;
+      let address; 
+      let suburb;
+      let pcode;
+      let sLatLng;
+      const state = 'QLD';
 
       function load() {
-        // var queryStrings = new QueryStringProcessor();
-
         const urlParams = new URLSearchParams(window.location.search);
 
-        //for (const [key, value] of urlParams.entries()) {
-        //    document.getElementById(key).value = decodeURIComponent(value);
-        //}
-        
-        /*sAddress = queryStrings.get('adr').split(',');
-        address = sAddress[0];
-        suburb = sAddress[1];
-        pcode = sAddress[2];
-        //const sLatLng = queryStrings.get('latlng');
-        */
         address = urlParams.get('adr');
-        suburb = urlParams.get('suburb');
-        pcode = urlParams.get('pcode');
-        const sLatLng = urlParams.get('latlng');
+        suburb = urlParams.get('suburb') || 'Townsville';
+        pcode = urlParams.get('pcode') || '4810';
+        sLatLng = urlParams.get('latlng');
 
-        if (address == '') return;
+        if (!address) return;
 
-        //if (GBrowserIsCompatible()) {
-          document.getElementById('addrDiv').innerHTML = address + ', ' + suburb + ' ' + state + ' ' + pcode;
+        document.getElementById('addrDiv').innerHTML = `${address}, ${suburb} ${state} ${pcode}`;
 
-          map = new GMap2(document.getElementById('mapDiv'));
+        map = new google.maps.Map(document.getElementById('mapDiv'), {
+          zoom: 8,
+          center: { lat: -25.344, lng: 131.036 },
+          mapTypeId: 'roadmap',
+        });
 
-          largeControl = new GLargeMapControl();
-          map.addControl(largeControl);
-          map.addControl(new GMapTypeControl());
-          map.addControl(new GScaleControl());
+        if (!sLatLng) {
+          const geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ address: `${address} ${suburb} ${state} ${pcode}` }, (results, status) => {
+            if (status === 'OK') {
+              const point = results[0].geometry.location;
+              getLatLngCallback(point);
+            } else {
+              alert('Geocode was not successful for the following reason: ' + status);
+            }
+          });
+          return;
+        }
 
-          if (sLatLng == '') {
-            /* TODO:
-            var geocoder = new GClientGeocoder();
-            geocoder.setBaseCountryCode('au');
-            geocoder.getLatLng(address + ' ' + suburb + ' ' + state + ' ' + pcode, getLatLngCallback);
-            */
-            return;
-          }
+        const sLatLngSplitted = sLatLng.split(',');
+        const point = new google.maps.LatLng(parseFloat(sLatLngSplitted[0]), parseFloat(sLatLngSplitted[1]));
 
-          sLatLngSplitted = sLatLng.split(',');
-
-          point = new GLatLng(parseFloat(sLatLngSplitted[0]), parseFloat(sLatLngSplitted[1]));
-
-          getLatLngCallback(point);
-        //} else {
-        //  alert("Your browser doesn't support Google Maps");
-        //}
+        getLatLngCallback(point);
       }
 
       function getLatLngCallback(point) {
@@ -79,60 +65,58 @@
           alert("We're sorry but the address was not found!");
           window.close();
         } else {
-          map.setCenter(point, 16);
-          marker = new GMarker(point);
-          map.addOverlay(marker);
+          map.setCenter(point);
+          map.setZoom(16);
 
-          var sHTML = '';
-
-          sHTML +=
-            '<div style="border-bottom: 1px solid black; "><img src="images/popupbanner.jpg" height="40" width="277" style="margin: 0 6px 4px 0px"></div>';
-          sHTML += '<div style="padding-top: 3px;font-family: arial;font-size: 12pt">';
-
-          sHTML += address + ',<br>' + suburb + ' ' + state + ' ' + pcode + '</div>';
-
-          GEvent.addListener(marker, 'click', function () {
-            marker.openInfoWindowHtml(sHTML);
+          marker = new google.maps.Marker({
+            position: point,
+            map: map,
           });
 
-          marker.openInfoWindowHtml(sHTML);
+          const sHTML = `
+            <div style="border-bottom: 1px solid black;">
+                <img src="images/navigatorbanner_small.jpg" height="40" style="margin: 0 6px 4px 0px">
+            </div>
+            <div style="padding-top: 3px;font-family: arial;font-size: 12pt">
+                ${address},<br>${suburb} ${state} ${pcode}
+            </div>
+        `;
+
+          const infowindow = new google.maps.InfoWindow({
+            content: sHTML,
+          });
+
+          marker.addListener('click', () => {
+            infowindow.open(map, marker);
+          });
+
+          infowindow.open(map, marker);
 
           addressGLatLng = point;
         }
       }
 
-      var streetViewVisible = false;
-
       function showStreetView() {
         if (!addressGLatLng) return;
 
         if (streetViewVisible) {
-          myPano.hide();
+          myPano.setVisible(false);
           document.getElementById('streetViewDiv').style.display = 'none';
           document.getElementById('mapDiv').style.height = '570px';
-          map.checkResize();
+          google.maps.event.trigger(map, 'resize');
           centerProperty();
           document.getElementById('cmdStreetView').value = 'Show Street View';
           streetViewVisible = false;
-          //myPano.remove ();
-
           return;
         }
 
-        panoClient = new GStreetviewClient();
-        panoClient.getNearestPanorama(addressGLatLng, showPanoData);
+        const streetViewService = new google.maps.StreetViewService();
+        streetViewService.getPanorama({ location: addressGLatLng, radius: 50 }, showPanoData);
       }
 
-      function showPanoData(panoData) {
-        if (panoData.code != 200) {
-          switch (panoData.code) {
-            case 500:
-              alert('A server error occured!');
-              break;
-            case 600:
-              alert('No Street View is available for this address.');
-              break;
-          }
+      function showPanoData(panoData, status) {
+        if (status !== 'OK') {
+          alert('No Street View is available for this address.');
           return;
         }
 
@@ -142,46 +126,33 @@
 
         centerProperty();
         document.getElementById('mapDiv').style.height = '320px';
-        map.checkResize();
+        google.maps.event.trigger(map, 'resize');
 
         document.getElementById('streetViewDiv').style.display = 'block';
         document.getElementById('streetViewDiv').innerHTML = 'Street View is Loading....';
 
-        map.panBy(new GSize(0, -50));
-
         if (!myPano) {
-          myPano = new GStreetviewPanorama(document.getElementById('streetViewDiv'));
-          GEvent.addListener(myPano, 'error', handleNoFlash);
+          myPano = new google.maps.StreetViewPanorama(document.getElementById('streetViewDiv'), {
+            position: panoData.location.latLng,
+            pov: { heading: 0, pitch: 0 },
+          });
         } else {
-          myPano.show();
+          myPano.setPosition(panoData.location.latLng);
+          myPano.setVisible(true);
         }
 
-        // Make sure camera is pointing at correct property
-        var angle = computeAngle(addressGLatLng, panoData.location.latlng);
-        myPano.setLocationAndPOV(panoData.location.latlng, { yaw: angle });
-      }
-
-      function handleNoFlash(errorCode) {
-        if (errorCode == 603) {
-          alert("Flash doesn't appear to be supported by your browser!");
-          return;
-        }
-      }
-
-      function cmdPrint_onclick() {
-        window.print();
+        const angle = computeAngle(addressGLatLng, panoData.location.latLng);
+        myPano.setPov({ heading: angle, pitch: 0 });
       }
 
       function computeAngle(endLatLng, startLatLng) {
-        var DEGREE_PER_RADIAN = 57.2957795;
-        var RADIAN_PER_DEGREE = 0.017453;
+        const DEGREE_PER_RADIAN = 57.2957795;
+        const RADIAN_PER_DEGREE = 0.017453;
 
-        var dlat = endLatLng.lat() - startLatLng.lat();
-        var dlng = endLatLng.lng() - startLatLng.lng();
+        const dlat = endLatLng.lat() - startLatLng.lat();
+        const dlng = endLatLng.lng() - startLatLng.lng();
 
-        // We multiply dlng with cos(endLat), since the two points are very closeby,
-        // so we assume their cos values are approximately equal.
-        var yaw = Math.atan2(dlng * Math.cos(endLatLng.lat() * RADIAN_PER_DEGREE), dlat) * DEGREE_PER_RADIAN;
+        const yaw = Math.atan2(dlng * Math.cos(endLatLng.lat() * RADIAN_PER_DEGREE), dlat) * DEGREE_PER_RADIAN;
         return wrapAngle(yaw);
       }
 
@@ -198,7 +169,16 @@
         map.setCenter(addressGLatLng, map.getZoom());
       }
 
-      //]]>
+      function cmdPrint_onclick() {
+        window.print();
+      }
+
+      function handleNoFlash(errorCode) {
+        if (errorCode == 603) {
+          alert("Flash doesn't appear to be supported by your browser!");
+          return;
+        }
+      }
     </script>
     <style type="text/css" media="print">
       INPUT {
@@ -208,7 +188,6 @@
   </head>
   <body
     onload="load()"
-    onunload="GUnload()"
     style="border: 0; margin: 0; background-color: #d6ecfb; font-family: Arial"
   >
     <div id="mapDiv" style="width: 800px; display: block; height: 570px; border-bottom: 2px solid #00a8ec"></div>
