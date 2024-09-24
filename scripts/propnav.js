@@ -1,32 +1,5 @@
 // Written by David Gilson.
 
-function fnRightNavSearch() {
-  const oDate = document.getElementById('PubDate');
-
-  if (!oDate.value) {
-    alert('Please choose a date...');
-    oDate.focus();
-    return;
-  }
-
-  const params = new URLSearchParams();
-  params.append('PubDate', oDate.value);
-
-  const suburb = document.getElementById('Suburb').value;
-  if (suburb) params.append('Suburb', suburb);
-
-  const type = document.getElementById('Type').value;
-  if (type) params.append('Type', type);
-
-  const priceRange = document.getElementById('PriceRange').value;
-  if (priceRange) params.append('PriceRange', priceRange);
-
-  const agent = document.getElementById('Agent').value;
-  if (agent) params.append('Agent', agent);
-
-  window.open(`propnav.html?${params.toString()}`);
-}
-
 function fnPNShow(elm) {
   let sDate = document.getElementById('PubDate').value;
   sDate = sDate.replace(/\//g, '-');
@@ -103,6 +76,7 @@ async function fnPNDoSearch() {
 
   document.getElementById('results').innerHTML = finishedHTML;
 
+  // Add click event for table to handle multiple row div buttons without multiple event handlers
   document.getElementById('propTable').addEventListener('click', function (event) {
     if (event.target) {
       if (event.target.matches('div.mapBtn')) {
