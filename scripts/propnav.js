@@ -38,15 +38,15 @@ function fnPNShow(elm) {
   const sOptions = `status=no,scrollbars=yes,resizable=yes,left=0,top=0,width=${width},height=${height}`;
 
   // window.open(`../${sDate}/${elm.innerHTML}.pdf`, 'propprev', sOptions);
-  const baseURL = window.location.origin; 
-  const fullPath = `${baseURL}/pdf/${sDate}/${elm.innerHTML}.pdf`;
+  const baseURL = window.location.href; 
+  const fullPath = `${baseURL}Pages/${sDate}/${elm.dataset.page}.pdf`;
 
-  alert (`PDF Would have been located:\n${fullPath}`);
+  alert (`A PDF of Page ${elm.dataset.page} would have downloaded from:\n\n${fullPath}`);
   return null;
 }
 
 function fnPNShowMap(elem) {
-  const sAddress = elem.innerText;
+  const sAddress = elem.dataset.address;
 
   const width = 800;
   const height = 600;
