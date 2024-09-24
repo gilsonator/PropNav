@@ -26,9 +26,14 @@
         }
 
         document.getElementById('toggle-btn').addEventListener('click', function () {
+            document.getElementById('close-btn').classList.toggle('collapsed');
+            document.getElementById('left-column').classList.toggle('collapsed');
+          document.getElementById('toggle-btn').classList.toggle('collapsed');
+        });
+        document.getElementById('close-btn').addEventListener('click', function () {
+          document.getElementById('toggle-btn').classList.toggle('collapsed');
           document.getElementById('left-column').classList.toggle('collapsed');
-          document.getElementById('col-heading').classList.toggle('collapsed');
-
+          document.getElementById('close-btn').classList.toggle('collapsed');
         });
       });
     </script>
@@ -36,9 +41,9 @@
   <body>
     <div class="container">
       <div id="left-column" class="left-column">
-        <div>
-            <span id="col-heading" class="col-heading">Search.</span>
-            <button type="button" class="toggle-btn" id="toggle-btn">☰</button>
+        <div id="toprow" class="top-row">
+            <button type="button" title="Open Search Options" class="toggle-btn collapsed" id="toggle-btn">☰</button>
+            <button type="button" title="« Close Search Options" class="toggle-btn " id="close-btn">Search</button>
         </div>
         <div class="form-group">
           <label for="PubDate">Publication Date:</label>

@@ -32,6 +32,17 @@ body {
 .left-column.collapsed .col-heading {
   display: none;
 }
+.left-column .top-row {
+  display: flex;
+  align-content: center;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.col-heading {
+  font-size: 24px;
+}
 .toggle-btn {
   background: none;
   border: none;
@@ -41,6 +52,10 @@ body {
   display: flex;
   justify-content: flex-end;
   /*padding: 10px;*/
+  padding: 0;
+}
+.toggle-btn.collapsed {
+  display: none;
 }
 .right-column {
   flex: 1;
@@ -48,6 +63,7 @@ body {
   box-sizing: border-box;
   overflow-y: auto;
 }
+
 #results {
   width: 100%;
   height: 100%;
@@ -60,6 +76,7 @@ body {
   margin-bottom: 2px;
   font-size: smaller;
   font-weight: 700;
+  text-wrap: nowrap;
 }
 .form-group select {
   width: 100%;
@@ -70,6 +87,7 @@ body {
 }
 .instructions {
   font-size: 12px;
+  
 }
 .arrow {
   font-size: 1.5em; /* Adjust the size as needed */
@@ -120,6 +138,7 @@ td:first-child {
   background-color: #D6ECFB;
   color: white;
   margin-right: 4px;
+  
 }
 
 .pageBtn:hover, .mapBtn:hover {
