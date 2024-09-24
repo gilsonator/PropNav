@@ -183,3 +183,13 @@ td:first-child {
   vertical-align: text-top;
   float: inline-start;
 }
+
+.custom-alert-close-btn {
+  background-color: #D6ECFB !important;
+  color: black !important;
+  border-radius: 5px;
+}
+
+.custom-alert-close-btn:hover {
+  background-color: #B0D4F1 !important;
+}
