@@ -13,7 +13,7 @@ function fnPNShow(elm) {
   const baseURL = window.location.href;
   const fullPath = `${baseURL}Pages/${sDate}/${elm.dataset.page}.pdf`;
 
-  alert(`A PDF of Page ${elm.dataset.page} would have downloaded from:\n\n${fullPath}`);
+  window.customAlert.show(`A PDF of Page ${elm.dataset.page} would have downloaded from:\n\n${fullPath}`);
   return null;
 }
 
@@ -35,7 +35,7 @@ async function fnPNDoSearch() {
   const oDate = document.getElementById('PubDate');
 
   if (!oDate.value) {
-    alert('Please choose a date...');
+    window.customAlert.show('Please choose a date...');
     oDate.focus();
     return;
   }

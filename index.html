@@ -6,34 +6,45 @@
     <title>Property Navigator - Upgrade Demo</title>
     <link rel="stylesheet" href="css/propnav.css" />
     <script src="scripts/propnav.js" defer></script>
-    <script src="scripts/mozxpath.js" defer></script>
-    <script>
+  
+    <script type="module">
+      import CustomAlert from './scripts/customAlert.js';
+
       document.addEventListener('DOMContentLoaded', () => {
+        window.customAlert = new CustomAlert();
+
         fnPNBuildDates();
         fnPNBuildSuburbs();
         fnPNBuildAgents();
 
         document.getElementById('btnSearch').disabled = false;
 
-        const urlParams = new URLSearchParams(window.location.search);
-
-        for (const [key, value] of urlParams.entries()) {
-          document.getElementById(key).value = decodeURIComponent(value);
-        }
-
-        if (urlParams.toString()) {
-          fnPNDoSearch();
-        }
-
         document.getElementById('toggle-btn').addEventListener('click', function () {
-            document.getElementById('close-btn').classList.toggle('collapsed');
-            document.getElementById('left-column').classList.toggle('collapsed');
+          document.getElementById('close-btn').classList.toggle('collapsed');
+          document.getElementById('left-column').classList.toggle('collapsed');
           document.getElementById('toggle-btn').classList.toggle('collapsed');
         });
+
         document.getElementById('close-btn').addEventListener('click', function () {
           document.getElementById('toggle-btn').classList.toggle('collapsed');
           document.getElementById('left-column').classList.toggle('collapsed');
           document.getElementById('close-btn').classList.toggle('collapsed');
+        });
+        
+        const alertButton = document.getElementById('alert-btn');
+        
+        const fullscreenButton = document.getElementById('fullscreen-btn');
+        fullscreenButton.addEventListener('click', () => {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+              console.log(`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
+              window.customAlert.show (`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
+            });
+          } else {
+            document.exitFullscreen();
+          }
+
+          window.customAlert.show (`Fullscreen mode`);
         });
       });
     </script>
@@ -42,8 +53,9 @@
     <div class="container">
       <div id="left-column" class="left-column">
         <div id="toprow" class="top-row">
-            <button type="button" title="Open Search Options" class="toggle-btn collapsed" id="toggle-btn">☰</button>
-            <button type="button" title="« Close Search Options" class="toggle-btn " id="close-btn">Search</button>
+          <button type="button" title="Open Search Options" class="toggle-btn collapsed" id="toggle-btn">☰</button>
+          <button type="button" title="« Close Search Options" class="toggle-btn" id="close-btn">Search</button>
+          <button type="button" title="Toggle Fullscreen" id="fullscreen-btn">FS</button>
         </div>
         <div class="form-group">
           <label for="PubDate">Publication Date:</label>
