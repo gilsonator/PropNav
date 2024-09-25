@@ -31,6 +31,61 @@ function fnPNShowMap(elem) {
   return window.open(`map.html?adr=${encodeURIComponent(sAddress)}`, 'propmap', sOptions);
 }
 
+const fetchInterval = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+let propertiesData;
+
+async function fnLoadXMLData(){
+  // DG TODO: create json on xml loading first?
+  const myXmlData = './xml/propnav.xml';
+  const myXslStylesheet = './xml/propnav-data.xsl';
+
+  let jsonString = '';
+  let xmlText;
+  let xslDataText;
+
+  try {
+
+    const [xmlResponse, xslResponse] = await Promise.all([fetch(myXmlData), fetch(myXslStylesheet)]);
+
+    xmlText = await xmlResponse.text();
+    xslDataText = await xslResponse.text();
+
+    try {
+      // Attempt to store the data in localStorage
+      window.localStorage.setItem('xslDataText', xslDataText);
+    } catch (e) {
+      if (e.name === 'QuotaExceededError') {
+        console.error('LocalStorage quota exceeded. Unable to store new data.');
+        // Handle the error, e.g., by clearing some old data or notifying the user
+      } else {
+        throw e; // Re-throw other errors
+      }
+    }
+
+    const parser = new DOMParser();
+    domXMLDocument = parser.parseFromString(xmlText, 'application/xml');
+    domXSLTDocument = parser.parseFromString(xslDataText, 'application/xml');
+
+    const xsltProcessor = new XSLTProcessor();
+    xsltProcessor.importStylesheet(domXSLTDocument);
+
+    const fragment = xsltProcessor.transformToFragment(domXMLDocument, document);
+    const tmpBox = document.createElement('div');
+    tmpBox.appendChild(fragment);
+
+    jsonString = tmpBox.textContent.trim();
+
+    window.localStorage.setItem('propertiesData.json', jsonString);
+    propertiesData = JSON.parse(jsonString);
+    console.log ('PropertyData:', propertiesData);
+
+    return propertiesData;
+
+  } catch (error) {
+    console.error('Error during transformation:', error);
+  }
+}
+
 async function fnPNDoSearch() {
   const oDate = document.getElementById('PubDate');
 
@@ -48,8 +103,6 @@ async function fnPNDoSearch() {
   let xslText;
 
   try {
-    const fetchInterval = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-
     const lastFetchTime = Number(window.localStorage.getItem('lastFetchTime'));
     const currentTime = new Date().getTime();
 
@@ -116,85 +169,85 @@ async function fnPNDoSearch() {
 }
 
 async function fnPNBuildSuburbs() {
-  const myXmlData = './xml/suburbs.xml';
   const suburbDropdown = document.getElementById('Suburb');
-
-  window.status = 'Loading Suburbs...';
   suburbDropdown.disabled = true;
 
-  try {
-    const response = await fetch(myXmlData);
-    const xmlText = await response.text();
+  // Sort suburbs alphabetically
+  const sortedSuburbs = propertiesData.suburbs.sort();
 
-    const parser = new DOMParser();
-    const domXMLDocument = parser.parseFromString(xmlText, 'application/xml');
+  sortedSuburbs.forEach(suburb => {
+    fnPNAddItemToDropDown(suburbDropdown, suburb, suburb);
+  });
 
-    const xmlNodes = domXMLDocument.querySelectorAll('suburb');
-
-    xmlNodes.forEach(node => {
-      fnPNAddItemToDropDown(suburbDropdown, node.getAttribute('name'), node.getAttribute('name'));
-    });
-  } catch (error) {
-    console.error('Error loading suburbs:', error);
-  }
-
-  window.status = '';
   suburbDropdown.disabled = false;
 }
 
 async function fnPNBuildAgents() {
-  const myXmlData = './xml/agents.xml';
   const agentDropdown = document.getElementById('Agent');
-
-  window.status = 'Loading Agents...';
   agentDropdown.disabled = true;
 
-  try {
-    const response = await fetch(myXmlData);
-    const xmlText = await response.text();
+  // Sort agents alphabetically
+  const sortedAgents = propertiesData.agents.sort();
 
-    const parser = new DOMParser();
-    const domXMLDocument = parser.parseFromString(xmlText, 'application/xml');
+  sortedAgents.forEach(agent => {
+    fnPNAddItemToDropDown(agentDropdown, agent, agent);
+  });
 
-    const xmlNodes = domXMLDocument.querySelectorAll('agent');
-
-    xmlNodes.forEach(node => {
-      fnPNAddItemToDropDown(agentDropdown, node.getAttribute('name'), node.getAttribute('name'));
-    });
-  } catch (error) {
-    console.error('Error loading agents:', error);
-  }
-
-  window.status = '';
   agentDropdown.disabled = false;
 }
 
-async function fnPNBuildDates() {
-  const myXmlData = './xml/dates.xml';
-  const pubDateDropdown = document.getElementById('PubDate');
 
-  window.status = 'Loading Dates...';
+function fnPNBuildPrices() {
+  const priceRangeDropdown = document.getElementById('PriceRange');
+  priceRangeDropdown.disabled = true;
+
+  // Sort the price ranges
+  const sortedPriceRanges = propertiesData.priceRanges.sort((a, b) => {
+    const parsePrice = priceRange => {
+      if (priceRange.includes('Auction') || priceRange.includes('Price on Application')) {
+        return Infinity; // Non-numeric values go to the end
+      }
+      const match = priceRange.match(/\d+/g);
+      return match ? parseInt(match[0], 10) : Infinity;
+    };
+
+    return parsePrice(a) - parsePrice(b);
+  });
+
+  // Add sorted price ranges to the dropdown
+  sortedPriceRanges.forEach(priceRange => {
+    fnPNAddItemToDropDown(priceRangeDropdown, priceRange, priceRange);
+  });
+
+  priceRangeDropdown.disabled = false;
+}
+
+
+function fnPNBuildDates() {
+  const pubDateDropdown = document.getElementById('PubDate');
   pubDateDropdown.disabled = true;
 
-  try {
-    const response = await fetch(myXmlData);
-    const xmlText = await response.text();
+  // Convert date strings to Date objects for sorting
+  const sortedDates = propertiesData.pubDates.map(dateString => {
+    const [day, month, year] = dateString.split('/');
+    return new Date(`${year}-${month}-${day}`);
+  }).sort((a, b) => a - b);
 
-    const parser = new DOMParser();
-    const domXMLDocument = parser.parseFromString(xmlText, 'application/xml');
+  // Convert sorted Date objects back to strings
+  const sortedDateStrings = sortedDates.map(date => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  });
 
-    const xmlNodes = domXMLDocument.querySelectorAll('date');
+  sortedDateStrings.forEach(dateString => {
+    fnPNAddItemToDropDown(pubDateDropdown, dateString, dateString);
+  });
 
-    xmlNodes.forEach(node => {
-      fnPNAddItemToDropDown(pubDateDropdown, node.getAttribute('datestring'), node.getAttribute('datestring'));
-    });
-  } catch (error) {
-    console.error('Error loading dates:', error);
-  }
-
-  window.status = '';
   pubDateDropdown.disabled = false;
 }
+
 
 function fnPNAddItemToDropDown(oDropDown, cValue, cText) {
   const oOption = document.createElement('option');
@@ -202,3 +255,5 @@ function fnPNAddItemToDropDown(oDropDown, cValue, cText) {
   oOption.text = cText;
   oDropDown.add(oOption);
 }
+
+window.fnPNBuildDates = fnPNBuildDates;

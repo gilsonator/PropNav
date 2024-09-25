@@ -10,12 +10,14 @@
     <script type="module">
       import CustomAlert from './scripts/customAlert.js';
 
-      document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('DOMContentLoaded', async () => {
         window.customAlert = new CustomAlert();
 
-        fnPNBuildDates();
-        fnPNBuildSuburbs();
-        fnPNBuildAgents();
+        const data = await fnLoadXMLData();
+        fnPNBuildPrices(data);
+        fnPNBuildDates(data);
+        fnPNBuildSuburbs(data);
+        fnPNBuildAgents(data);
 
         document.getElementById('btnSearch').disabled = false;
 
@@ -44,7 +46,7 @@
             document.exitFullscreen();
           }
 
-          window.customAlert.show (`Fullscreen mode`);
+          window.customAlert.show (`Fullscreen mode`, document.fullscreenElement ? ' Opened' : ' Closed');
         });
       });
     </script>
@@ -67,11 +69,6 @@
           <label for="PriceRange">Price Range:</label>
           <select id="PriceRange">
             <option selected value="">Show All</option>
-            <option value="$0 - $300,000">$0 - $300,000</option>
-            <option value="$300,000 - $450,000">$300,000 - $450,000</option>
-            <option value="$450,000+">$450,000+</option>
-            <option value="Auction">Auction</option>
-            <option value="Price on Application">Price on Application</option>
           </select>
         </div>
         <div class="form-group">

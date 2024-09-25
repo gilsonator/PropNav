@@ -62,9 +62,9 @@ class CustomAlert {
           padding: 20px;
           border: 1px solid #888;
           width: 80%;
-          max-width: 460px;
+          max-width: 400px;
           text-align: center;
-          border-radius: 5px;
+          border-radius: 15px;
       }
       .custom-alert-close-btn {
           background-color: #4CAF50;

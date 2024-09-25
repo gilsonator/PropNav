@@ -8,10 +8,11 @@
         <table id="propTable" width="100%">
             <tr>
                 <th></th>
+                <th>Pub Date</th>
+                <th width="20%">Address</th>
                 <th>Suburb</th>
                 <th>Type</th>
                 <th>Price Range</th>
-                <th width="20%">Address</th>
                 <th>Agent</th>
             </tr>
             <xsl:for-each select="property[contains(@pubdate, $Date) and contains(@suburb, $Suburb) and contains(@type, $Type) and contains(@pricerange, $PriceRange) and contains(@agent, $Agent)]">
@@ -24,6 +25,12 @@
                         </div>
                     </td>
                     <td>
+                        <xsl:value-of select="@pubdate" />
+                    </td>
+                    <td>
+                        <xsl:value-of select="@saddress" />
+                    </td>
+                    <td>
                         <xsl:value-of select="@suburb"/>
                     </td>
                     <td>
@@ -31,9 +38,6 @@
                     </td>
                     <td>
                         <xsl:value-of select="@pricerange" />
-                    </td>
-                    <td>
-                        <xsl:value-of select="@saddress" />
                     </td>
                     <td>
                         <xsl:value-of select="@agent" />
