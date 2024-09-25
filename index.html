@@ -6,7 +6,7 @@
     <title>Property Navigator - Upgrade Demo</title>
     <link rel="stylesheet" href="css/propnav.css" />
     <script src="scripts/propnav.js" defer></script>
-  
+
     <script type="module">
       import CustomAlert from './scripts/customAlert.js';
 
@@ -19,8 +19,6 @@
         fnPNBuildSuburbs(data);
         fnPNBuildAgents(data);
 
-        document.getElementById('btnSearch').disabled = false;
-
         document.getElementById('toggle-btn').addEventListener('click', function () {
           document.getElementById('close-btn').classList.toggle('collapsed');
           document.getElementById('left-column').classList.toggle('collapsed');
@@ -32,21 +30,24 @@
           document.getElementById('left-column').classList.toggle('collapsed');
           document.getElementById('close-btn').classList.toggle('collapsed');
         });
-        
-        const alertButton = document.getElementById('alert-btn');
-        
+
         const fullscreenButton = document.getElementById('fullscreen-btn');
         fullscreenButton.addEventListener('click', () => {
           if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen().catch(err => {
               console.log(`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
-              window.customAlert.show (`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
+              window.customAlert.show(`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
             });
           } else {
             document.exitFullscreen();
           }
 
-          window.customAlert.show (`Fullscreen mode`, document.fullscreenElement ? ' Opened' : ' Closed');
+          window.customAlert.show(`Fullscreen mode`, document.fullscreenElement ? ' Opened' : ' Closed');
+        });
+
+        // Convert HTMLCollection to an array and add onchange event
+        Array.from(document.getElementsByTagName('select')).forEach(element => {
+          element.onchange = fnPNDoSearch;
         });
       });
     </script>
@@ -92,9 +93,6 @@
           <select id="Agent" disabled>
             <option selected value="">Show All</option>
           </select>
-        </div>
-        <div class="form-group">
-          <button type="button" id="btnSearch" onclick="fnPNDoSearch()" disabled>Search</button>
         </div>
         <div class="instructions">
           <b>Instructions:</b><br />
