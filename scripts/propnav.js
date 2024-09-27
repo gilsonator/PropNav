@@ -10,8 +10,8 @@ function fnPNShow(elm) {
   const sOptions = `status=no,scrollbars=yes,resizable=yes,left=0,top=0,width=${width},height=${height}`;
 
   // window.open(`../${sDate}/${elm.innerHTML}.pdf`, 'propprev', sOptions);
-  const baseURL = window.location.href;
-  const fullPath = `${baseURL}Pages/${sDate}/${elm.dataset.page}.pdf`;
+  // const baseURL = window.location.href;
+  const fullPath = `${sDate}_page-${elm.dataset.page}.pdf`;
 
   window.customAlert.show(`A PDF of Page ${elm.dataset.page} would have downloaded from:\n\n${fullPath}`);
   return null;
