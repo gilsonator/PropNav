@@ -23,6 +23,7 @@ body {
   flex-direction: column;
   overflow: hidden;
   transition: width 0.3s;
+  user-select: none;
 }
 .left-column.collapsed {
   width: 50px;
