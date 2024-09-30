@@ -160,6 +160,14 @@ async function fnPNDoSearch() {
           console.log('Map Window Opened:', mapWindow);
         } else if (event.target.matches('div.pageBtn')) {
           fnPNShow(event.target);
+        } else if (event.target.matches('td') && event.target.parentNode.matches('tr')) {
+          const row = event.target.parentElement 
+          const id = row.dataset.id;
+          
+          //row.classList.toggle('clicked');
+
+          customAlert.show (`Clicked: ${id}`);
+          console.log ('PropertyData:', row);
         }
       }
     });
