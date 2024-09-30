@@ -9,7 +9,7 @@
             <tr>
                 <th></th>
                 <th>Pub Date</th>
-                <th width="20%">Address</th>
+                <th>Address</th>
                 <th>Suburb</th>
                 <th>Type</th>
                 <th>Price Range</th>
@@ -17,7 +17,7 @@
             </tr>
             <xsl:for-each select="property[contains(@pubdate, $Date) and contains(@suburb, $Suburb) and contains(@type, $Type) and contains(@pricerange, $PriceRange) and contains(@agent, $Agent)]">
                 <xsl:variable name="currentPosition" select="position()" />
-                <tr>
+                <tr id="propId_{$currentPosition}" data-id="{$currentPosition}">
                     <td>
                         <div class="buttons">
                             <div class="pageBtn" data-id="PageId-{$currentPosition}" data-page="{@page}" data-function="fnPNShow" title="Click to View Page {@page}"></div>
