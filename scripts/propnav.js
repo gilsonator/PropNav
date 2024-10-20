@@ -18,13 +18,21 @@ function fnPNShow(elm) {
 }
 
 function fnPNShowMap(elem) {
-  const sAddress = elem.dataset.address;
-  
-  const link = document.createElement('a');
-  link.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(sAddress)}`;
-  link.target="_blank";
-  link.click();
+  const location = elem.dataset.address;
 
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  let url;
+
+  if (isMobile) {
+      // Use geo: URI for mobile devices
+      url = `geo:0,0?q=${encodeURIComponent(location)}`;
+  } else {
+      // Fallback to Google Maps URL for PC browsers
+      url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
+  }
+
+  window.open(url);
+  
   /* OLD, custom map:
   const width = 800;
   const height = 600;
