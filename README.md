@@ -21,7 +21,8 @@ xsltProcessor.importStylesheet(domXSLTDocument);
 xsltProcessor.transformToFragment(domXMLDocument, document);
 ```
 
-
+### 2024 Update
+Replaced custom GMap with simple link triggered to open in new window. Old code is still in repository for reference.
 
 ### Archive Links
 

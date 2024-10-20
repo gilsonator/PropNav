@@ -19,7 +19,13 @@ function fnPNShow(elm) {
 
 function fnPNShowMap(elem) {
   const sAddress = elem.dataset.address;
+  
+  const link = document.createElement('a');
+  link.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(sAddress)}`;
+  link.target="_blank";
+  link.click();
 
+  /* OLD, custom map:
   const width = 800;
   const height = 600;
 
@@ -29,6 +35,7 @@ function fnPNShowMap(elem) {
   const sOptions = `status=no,scrollbars=no,resizable=no,left=${left},top=${top},width=${width},height=${height}`;
 
   return window.open(`map.html?adr=${encodeURIComponent(sAddress)}`, 'propmap', sOptions);
+  */
 }
 
 const fetchInterval = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
