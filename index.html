@@ -59,9 +59,31 @@
           window.customAlert.show(`Fullscreen mode`, document.fullscreenElement ? ' Opened' : ' Closed');
         });
 
+        const resultsContainer = document.getElementById('results');
+        
+        // Using event delegation on the results container
+        resultsContainer.addEventListener('click', function (event) {
+          if (event.target) {
+              if (event.target.matches('div.mapBtn')) {
+                  const mapWindow = fnPNShowMap(event.target);
+                  console.log('Map Window Opened:', mapWindow);
+              } else if (event.target.matches('div.pageBtn')) {
+                  fnPNShow(event.target);
+              } else if (event.target.matches('td') && event.target.parentNode.matches('tr')) {
+                  const row = event.target.parentElement;
+                  const id = row.dataset.id;
+                  customAlert.show(`Clicked: ${id}`);
+                  console.log('PropertyData:', row);
+              }
+          }
+      });
         // Convert HTMLCollection to an array and add onchange event
         Array.from(document.getElementsByTagName('select')).forEach(element => {
-          element.onchange = fnPNDoSearch;
+          
+          // Named function will provide more meaningful stack traces
+          element.onchange = function handleChangeEvent() {
+              fnPNDoSearch(resultsContainer);
+          };
         });
       });
     </script>

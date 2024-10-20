@@ -86,93 +86,68 @@ async function fnLoadXMLData(){
   }
 }
 
-async function fnPNDoSearch() {
+async function fnPNDoSearch(resultsContainer) {
   const oDate = document.getElementById('PubDate');
-
   if (!oDate.value) {
-    window.customAlert.show('Please choose a date...');
-    oDate.focus();
-    return;
+      window.customAlert.show('Please choose a date...');
+      oDate.focus();
+      return;
   }
-
+  
   const myXmlData = './xml/propnav.xml';
   const myXslStylesheet = './xml/propnav.xsl';
-
+  const fetchInterval = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
   let finishedHTML = '';
-  let xmlText;
-  let xslText;
+  let xmlText, xslText;
 
   try {
-    const lastFetchTime = Number(window.localStorage.getItem('lastFetchTime'));
-    const currentTime = new Date().getTime();
+      const lastFetchTime = Number(window.localStorage.getItem('lastFetchTime'));
+      const currentTime = new Date().getTime();
 
-    if (!lastFetchTime || currentTime - lastFetchTime > fetchInterval) {
-      const [xmlResponse, xslResponse] = await Promise.all([fetch(myXmlData), fetch(myXslStylesheet)]);
+      if (!lastFetchTime || currentTime - lastFetchTime > fetchInterval) {
+          const [xmlResponse, xslResponse] = await Promise.all([fetch(myXmlData), fetch(myXslStylesheet)]);
+          xmlText = await xmlResponse.text();
+          xslText = await xslResponse.text();
 
-      xmlText = await xmlResponse.text();
-      xslText = await xslResponse.text();
-
-      try {
-        // Attempt to store the data in localStorage
-        window.localStorage.setItem('xmlText', xmlText);
-        window.localStorage.setItem('xslText', xslText);
-        window.localStorage.setItem('lastFetchTime', currentTime.toString());
-      } catch (e) {
-        if (e.name === 'QuotaExceededError') {
-          console.error('LocalStorage quota exceeded. Unable to store new data.');
-          // Handle the error, e.g., by clearing some old data or notifying the user
-        } else {
-          throw e; // Re-throw other errors
-        }
+          try {
+              // Attempt to store the data in localStorage
+              window.localStorage.setItem('xmlText', xmlText);
+              window.localStorage.setItem('xslText', xslText);
+              // Store the current time
+              window.localStorage.setItem('lastFetchTime', currentTime.toString());
+          } catch (e) {
+              if (e.name === 'QuotaExceededError') {
+                  console.error('LocalStorage quota exceeded. Unable to store new data.');
+                  // Handle the error, e.g., by clearing some old data or notifying the user
+              } else {
+                  throw e; // Re-throw other errors
+              }
+          }
+      } else {
+          xmlText = window.localStorage.getItem('xmlText');
+          xslText = window.localStorage.getItem('xslText');
       }
-    } else {
-      xmlText = window.localStorage.getItem('xmlText');
-      xslText = window.localStorage.getItem('xslText');
-    }
 
-    const parser = new DOMParser();
-    domXMLDocument = parser.parseFromString(xmlText, 'application/xml');
-    domXSLTDocument = parser.parseFromString(xslText, 'application/xml');
+      const parser = new DOMParser();
+      const domXMLDocument = parser.parseFromString(xmlText, 'application/xml');
+      const domXSLTDocument = parser.parseFromString(xslText, 'application/xml');
 
-    const xsltProcessor = new XSLTProcessor();
-    xsltProcessor.importStylesheet(domXSLTDocument);
+      const xsltProcessor = new XSLTProcessor();
+      xsltProcessor.importStylesheet(domXSLTDocument);
+      xsltProcessor.setParameter(null, 'Date', oDate.value);
+      xsltProcessor.setParameter(null, 'Suburb', document.getElementById('Suburb').value);
+      xsltProcessor.setParameter(null, 'Type', document.getElementById('Type').value);
+      xsltProcessor.setParameter(null, 'PriceRange', document.getElementById('PriceRange').value);
+      xsltProcessor.setParameter(null, 'Agent', document.getElementById('Agent').value);
 
-    xsltProcessor.setParameter(null, 'Date', oDate.value);
-    xsltProcessor.setParameter(null, 'Suburb', document.getElementById('Suburb').value);
-    xsltProcessor.setParameter(null, 'Type', document.getElementById('Type').value);
-    xsltProcessor.setParameter(null, 'PriceRange', document.getElementById('PriceRange').value);
-    xsltProcessor.setParameter(null, 'Agent', document.getElementById('Agent').value);
-
-    const fragment = xsltProcessor.transformToFragment(domXMLDocument, document);
-
-    const tmpBox = document.createElement('div');
-    tmpBox.appendChild(fragment);
-
-    finishedHTML = tmpBox.innerHTML;
-
-    document.getElementById('results').innerHTML = finishedHTML;
-
-    // Add click event for table to handle multiple row div buttons without multiple event handlers
-    document.getElementById('propTable').addEventListener('click', function (event) {
-      if (event.target) {
-        if (event.target.matches('div.mapBtn')) {
-          const mapWindow = fnPNShowMap(event.target);
-          console.log('Map Window Opened:', mapWindow);
-        } else if (event.target.matches('div.pageBtn')) {
-          fnPNShow(event.target);
-        } else if (event.target.matches('td') && event.target.parentNode.matches('tr')) {
-          const row = event.target.parentElement 
-          const id = row.dataset.id;
-          
-          //row.classList.toggle('clicked');
-
-          customAlert.show (`Clicked: ${id}`);
-          console.log ('PropertyData:', row);
-        }
-      }
-    });
+      const fragment = xsltProcessor.transformToFragment(domXMLDocument, document);
+      const tmpBox = document.createElement('div');
+      tmpBox.appendChild(fragment);
+      finishedHTML = tmpBox.innerHTML;
+      
+      resultsContainer.innerHTML = finishedHTML;
   } catch (error) {
-    console.error('Error during transformation:', error);
+      console.error('Error during transformation:', error);
   }
 }
 
