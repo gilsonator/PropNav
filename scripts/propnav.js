@@ -20,7 +20,21 @@ function fnPNShow(elm) {
 function fnPNShowMap(elem) {
   const location = elem.dataset.address;
 
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const isMobile = /iPhone|iPad|iPod|Android|X11/i.test(navigator.userAgent);
+  console.log('isMobile', isMobile);
+  console.log('userAgent',navigator.userAgent);
+  
+  const href = window.location.href;
+  const currentUrl = new URL(href);
+
+  const params = new URLSearchParams(currentUrl.searchParams);
+  const isDebug = params.get('debug');
+
+  if (isDebug) {
+    window.customAlert.show(`isMobile: ${isMobile} ${navigator.userAgent}`);
+    return;
+  }
+  
   let url;
 
   if (isMobile) {
